@@ -34,8 +34,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   List<ListItem> _userItems = [
-        ListItem(id: "T1", subject: "Test 1", date: "12"),
-    ListItem(id: "T2", subject: "Test 2", date: "10"),
+        ListItem(id: "T1", subject: "MIS", date: "12.02.2023 12:00"),
+        ListItem(id: "T2", subject: "VBS", date: "15.02.2023 15:00"),
   ];
 
   void _addItemFunction(BuildContext ct) {
@@ -78,8 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
               margin: const EdgeInsets.symmetric(
                 vertical: 8, 
                 horizontal: 10), 
-                child: ListTile(title:Text(_userItems[index].subject),
-                subtitle:             Text(_userItems[index].date),
+                child: ListTile(title:Text(_userItems[index].subject, style: TextStyle(fontWeight: FontWeight.bold),),
+                subtitle:             Text(_userItems[index].date, style: TextStyle(color: Colors.grey.withOpacity(1.0)),),
                 trailing: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {

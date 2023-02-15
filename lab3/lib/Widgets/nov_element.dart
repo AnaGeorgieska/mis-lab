@@ -42,7 +42,7 @@ class _NovElementState extends State<NovElement> {
         children: [
           TextField(
             controller: _naslovController,
-            decoration: InputDecoration(labelText: "Subject"),
+            decoration: InputDecoration(labelText: "Subject",),
             onSubmitted: (_) => _submitData(),
           ),
           TextField(
