@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab3_test/Pages/calendar_page.dart';
 
 import 'Models/list_item.dart';
 import 'Widgets/nov_element.dart';
@@ -32,17 +33,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   List<ListItem> _userItems = [
-        ListItem(id: "T1", subject: "MIS", date: "12.02.2023 12:00"),
-        ListItem(id: "T2", subject: "VBS", date: "15.02.2023 15:00"),
+    ListItem(id: "T1", subject: "MIS", date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0)),
+    ListItem(id: "T2", subject: "VBS", date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0).add(const Duration(days: 1 ,hours: 2))),
   ];
 
   void _addItemFunction(BuildContext ct) {
     showModalBottomSheet(
         context: ct,
         builder: (_) {
-          return GestureDetector(onTap: () {}, child: NovElement(_addNewItemToList), behavior: HitTestBehavior.opaque);
+          return GestureDetector(
+              onTap: () {},
+              child: NovElement(_addNewItemToList),
+              behavior: HitTestBehavior.opaque);
         });
   }
 
@@ -57,40 +60,56 @@ class _MyHomePageState extends State<MyHomePage> {
       _userItems.removeWhere((elem) => elem.id == id);
     });
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Lists Example"),
-            actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => _addItemFunction(context),
-                )
-              ]
-        ),
-        body: Center(
-          child: _userItems.isEmpty ? Text('No elements') : ListView.builder(itemBuilder: (context, index)  {
-            return Card(
-              elevation: 3, 
-              margin: const EdgeInsets.symmetric(
-                vertical: 8, 
-                horizontal: 10), 
-                child: ListTile(title:Text(_userItems[index].subject, style: TextStyle(fontWeight: FontWeight.bold),),
-                subtitle:             Text(_userItems[index].date, style: TextStyle(color: Colors.grey.withOpacity(1.0)),),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    _deleteItem(_userItems[index].id);
-                  },
-                ),
-              )
-            );
-          },
-          itemCount: _userItems.length
+        appBar: AppBar(title: Text("Lists Example"), actions: <Widget>[
+        
+          TextButton(
+            onPressed: () =>  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CalendarPage(list: _userItems))),
+            child: const Text(
+              "Calendar",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _addItemFunction(context),
           ),
+        ]),
+          
+        body: Center(
+          child: _userItems.isEmpty
+              ? Text('No elements')
+              : ListView.builder(
+                  itemBuilder: (context, index) {
+                    return Card(
+                        elevation: 3,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 10),
+                        child: ListTile(
+                          title: Text(
+                            _userItems[index].subject,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            _userItems[index].date.toString(),
+                            style:
+                                TextStyle(color: Colors.grey.withOpacity(1.0)),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              _deleteItem(_userItems[index].id);
+                            },
+                          ),
+                        ));
+                  },
+                  itemCount: _userItems.length),
         ));
   }
 }

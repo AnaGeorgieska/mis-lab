@@ -29,7 +29,7 @@ class _NovElementState extends State<NovElement> {
       return;
     }
 
-    final newItem = ListItem(id: nanoid(5), subject: vnesenNaslov, date: vnesenaVrednost);
+    final newItem = ListItem(id: nanoid(5), subject: vnesenNaslov, date: DateTime.parse(vnesenaVrednost));
     widget.addItem(newItem);
     Navigator.of(context).pop();
   }
@@ -48,7 +48,7 @@ class _NovElementState extends State<NovElement> {
           TextField(
             controller: _vrednostController,
             decoration: InputDecoration(labelText: "Date"),
-            // keyboardType: TextInputType.number,
+            keyboardType: TextInputType.datetime,
             onSubmitted: (_) => _submitData(),
           ),
           AdaptiveFlatButton("Add", _submitData)
