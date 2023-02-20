@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lab3_test/Models/user.dart';
+import 'package:lab3_test/Pages/authentication.dart';
 import 'package:lab3_test/Pages/calendar_page.dart';
 
 import 'Models/list_item.dart';
@@ -38,6 +40,10 @@ class _MyHomePageState extends State<MyHomePage> {
     ListItem(id: "T2", subject: "VBS", date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0).add(const Duration(days: 1 ,hours: 2))),
   ];
 
+  List<User> _userItemsList = [
+    User(id: "T1", username: "ana", password: "ana", listItems: []),
+  ];
+
   void _addItemFunction(BuildContext ct) {
     showModalBottomSheet(
         context: ct,
@@ -61,10 +67,32 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  bool _addNewUserToList(User item) {
+    setState(() {
+      _userItemsList.add(item);
+    });
+
+    _userItemsList.forEach((element) {print(element.id); print(element.username); print(element.password); print(element.listItems);});
+
+    return (item!=null);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Lists Example"), actions: <Widget>[
+        appBar: AppBar(title: Text(""),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () =>  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AuthenticationPage(addItem: _addNewUserToList))),
+            child: const Text(
+              "Register",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         
           TextButton(
             onPressed: () =>  Navigator.push(
