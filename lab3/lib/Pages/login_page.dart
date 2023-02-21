@@ -6,17 +6,17 @@ import '../Models/user.dart';
 import '../Widgets/adaptive_flat_button.dart';
 
 
-class AuthenticationPage extends StatefulWidget {
-  final Function addItem;
+class LoginPage extends StatefulWidget {
+  final Function login;
 
 
-  const AuthenticationPage({Key? key, required this.addItem}): super(key: key);
+  const LoginPage({Key? key, required this.login}): super(key: key);
 
   @override
-  State<StatefulWidget> createState() => AuthenticationPageState();
+  State<StatefulWidget> createState() => LoginPageState();
 }
 
-class AuthenticationPageState extends State<AuthenticationPage> {
+class LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -46,19 +46,18 @@ class AuthenticationPageState extends State<AuthenticationPage> {
 
   void _submitData() {
     if (_validate(_usernameController.text, _passwordController.text)) {
-      User newUser = User(id: nanoid(5), username: _usernameController.text,password: _passwordController.text, listItems: []);
-      bool result = widget.addItem(newUser);
+      bool result = widget.login(_usernameController.text, _passwordController.text);
 
       if (result) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("You Registered successfully"),
+          content: Text("You logged in successfully"),
           duration: Duration(seconds: 3),
         ));
         Navigator.of(context).pop();
 
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Failed to register!"),
+          content: Text("Failed to login!"),
           duration: Duration(seconds: 3),
         ));
       }
@@ -70,7 +69,7 @@ class AuthenticationPageState extends State<AuthenticationPage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text("User Registration"),
+          title: const Text("Login User"),
         ),
         body: Container(
       padding: EdgeInsets.all(8),
@@ -87,7 +86,7 @@ class AuthenticationPageState extends State<AuthenticationPage> {
             keyboardType: TextInputType.datetime,
             onSubmitted: (_) => _submitData(),
           ),
-          AdaptiveFlatButton("Register", _submitData)
+          AdaptiveFlatButton("Login", _submitData)
         ],
       ),
     ));

@@ -4,6 +4,7 @@ import 'package:lab3_test/Pages/authentication.dart';
 import 'package:lab3_test/Pages/calendar_page.dart';
 
 import 'Models/list_item.dart';
+import 'Pages/login_page.dart';
 import 'Widgets/nov_element.dart';
 
 void main() {
@@ -35,14 +36,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<ListItem> _userItems = [
+  List<User>? _userItemsList;
+
+  User? _user;
+
+  void initState() {
+    _userItemsList = [
+    User(id: "T1", username: "ana", password: "ana", listItems: [
     ListItem(id: "T1", subject: "MIS", date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0)),
     ListItem(id: "T2", subject: "VBS", date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0).add(const Duration(days: 1 ,hours: 2))),
+  ]),
   ];
-
-  List<User> _userItemsList = [
-    User(id: "T1", username: "ana", password: "ana", listItems: []),
-  ];
+  _user = _userItemsList?[0];
+    super.initState();
+  }
 
   void _addItemFunction(BuildContext ct) {
     showModalBottomSheet(
@@ -57,23 +64,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _addNewItemToList(ListItem item) {
     setState(() {
-      _userItems.add(item);
+      _user?.listItems.add(item);
     });
   }
 
   void _deleteItem(String id) {
     setState(() {
-      _userItems.removeWhere((elem) => elem.id == id);
+      _user?.listItems.removeWhere((elem) => elem.id == id);
     });
+  }
+
+  bool _login(String username, String password) {
+    _user = null;
+    _userItemsList?.forEach((element) {
+      if(element.username == username && element.password == password){
+        setState(() {
+          _user=element;
+        });
+      }
+    });
+
+    return (_user!=null);
   }
 
   bool _addNewUserToList(User item) {
     setState(() {
-      _userItemsList.add(item);
+      _userItemsList?.add(item);
     });
-
-    _userItemsList.forEach((element) {print(element.id); print(element.username); print(element.password); print(element.listItems);});
-
+    _user=item;
     return (item!=null);
   }
 
@@ -82,6 +100,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(title: Text(""),
         actions: <Widget>[
+          TextButton(
+            onPressed: () =>  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(login: _login))),
+            child: const Text(
+              "Login",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
           TextButton(
             onPressed: () =>  Navigator.push(
                   context,
@@ -99,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          CalendarPage(list: _userItems))),
+                          CalendarPage(list: _user!.listItems))),
             child: const Text(
               "Calendar",
               style: TextStyle(color: Colors.white),
@@ -111,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ]),
           
         body: Center(
-          child: _userItems.isEmpty
+          child: _user!.listItems.isEmpty
               ? Text('No elements')
               : ListView.builder(
                   itemBuilder: (context, index) {
@@ -121,23 +150,23 @@ class _MyHomePageState extends State<MyHomePage> {
                             vertical: 8, horizontal: 10),
                         child: ListTile(
                           title: Text(
-                            _userItems[index].subject,
+                            _user!.listItems[index].subject,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            _userItems[index].date.toString(),
+                            _user!.listItems[index].date.toString(),
                             style:
                                 TextStyle(color: Colors.grey.withOpacity(1.0)),
                           ),
                           trailing: IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () {
-                              _deleteItem(_userItems[index].id);
+                              _deleteItem(_user!.listItems[index].id);
                             },
                           ),
                         ));
                   },
-                  itemCount: _userItems.length),
+                  itemCount: _user!.listItems.length),
         ));
   }
 }
