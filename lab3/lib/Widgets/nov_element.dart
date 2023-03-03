@@ -32,6 +32,12 @@ class _NovElementState extends State<NovElement> {
     final newItem = ListItem(id: nanoid(5), subject: vnesenNaslov, date: DateTime.parse(vnesenaVrednost));
     widget.addItem(newItem);
     Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Subject added to the calendar"),
+          duration: Duration(seconds: 1),
+        ),
+      );
   }
 
   @override

@@ -22,22 +22,10 @@ class LoginPageState extends State<LoginPage> {
 
   bool _validate(String? username, String? password) {
     if (username == null || username.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Username is required!"),
-          duration: Duration(seconds: 1),
-        ),
-      );
       return false;
     }
 
     if (password == null || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password is required!"),
-          duration: Duration(seconds: 1),
-        ),
-      );
       return false;
     }
 
@@ -56,10 +44,12 @@ class LoginPageState extends State<LoginPage> {
         Navigator.of(context).pop();
 
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Failed to login!"),
-          duration: Duration(seconds: 3),
-        ));
+        // // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //   content: Text("Failed to login!"),
+        //   duration: Duration(seconds: 3),
+        // //)
+        // );
       }
     }
   }

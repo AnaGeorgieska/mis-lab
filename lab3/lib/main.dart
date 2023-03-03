@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lab3_test/Models/user.dart';
 import 'package:lab3_test/Pages/authentication.dart';
 import 'package:lab3_test/Pages/calendar_page.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'Models/list_item.dart';
 import 'Pages/login_page.dart';
@@ -72,6 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _user?.listItems.removeWhere((elem) => elem.id == id);
     });
+     ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Subject is deleted from the calendar"),
+          duration: Duration(seconds: 1),
+        ),
+      );
   }
 
   bool _login(String username, String password) {
@@ -95,11 +102,23 @@ class _MyHomePageState extends State<MyHomePage> {
     return (item!=null);
   }
 
+  Future<void> _openMap() async {
+    //String googleURL = 'https://www.google.com/maps/search/?api=1&query=41.9898734,21.4401741';
+    String googleURL = 'https://www.google.com/maps/search/?api=1';
+    await canLaunchUrlString(googleURL)
+      ? await launchUrlString(googleURL)
+      : throw 'Could not launch $googleURL';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(""),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.location_on),
+            onPressed:() => _openMap(),
+          ),
           TextButton(
             onPressed: () =>  Navigator.push(
                   context,
