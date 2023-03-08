@@ -46,12 +46,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void initState() {
     _userItemsList = [
-    User(id: "T1", username: "ana", password: "ana", listItems: [
-    ListItem(id: "T1", subject: "MIS", date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0)),
-    ListItem(id: "T2", subject: "VBS", date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0).add(const Duration(days: 1 ,hours: 2))),
-  ]),
-  ];
-  _user = _userItemsList?[0];
+      User(id: "T1", username: "ana", password: "ana", listItems: [
+        ListItem(
+          id: "T1",
+          subject: "MIS",
+          date: DateTime(DateTime.now().year, DateTime.now().month,
+              DateTime.now().day, 9, 0, 0),
+          latitude: 37.779100,
+          longitude: -122.439900,
+        ),
+        ListItem(
+          id: "T2",
+          subject: "VBS",
+          date: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day, 9, 0, 0)
+              .add(const Duration(days: 1, hours: 2)),
+          latitude: 37.779600,
+          longitude: -122.439100,
+        ),
+      ]),
+    ];
+    _user = _userItemsList?[0];
     super.initState();
   }
 
@@ -76,95 +91,78 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _user?.listItems.removeWhere((elem) => elem.id == id);
     });
-     ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Subject is deleted from the calendar"),
-          duration: Duration(seconds: 1),
-        ),
-      );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Subject is deleted from the calendar"),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   bool _login(String username, String password) {
     _user = null;
     _userItemsList?.forEach((element) {
-      if(element.username == username && element.password == password){
+      if (element.username == username && element.password == password) {
         setState(() {
-          _user=element;
+          _user = element;
         });
       }
     });
 
-    return (_user!=null);
+    return (_user != null);
   }
 
   bool _addNewUserToList(User item) {
     setState(() {
       _userItemsList?.add(item);
     });
-    _user=item;
-    return (item!=null);
-  }
-
-  Future<void> _openMap() async {
-    //String googleURL = 'https://www.google.com/maps/search/?api=1&query=41.9898734,21.4401741';
-    String googleURL = 'https://www.google.com/maps/search/?api=1';
-    await canLaunchUrlString(googleURL)
-      ? await launchUrlString(googleURL)
-      : throw 'Could not launch $googleURL';
+    _user = item;
+    return (item != null);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(""),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.location_on),
-            onPressed:() =>  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          MapScreen())),
-          ),
+        appBar: AppBar(title: Text(""), actions: <Widget>[
           TextButton(
-            onPressed: () =>  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          LoginPage(login: _login))),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginPage(login: _login))),
             child: const Text(
               "Login",
               style: TextStyle(color: Colors.white),
             ),
           ),
           TextButton(
-            onPressed: () =>  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          AuthenticationPage(addItem: _addNewUserToList))),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AuthenticationPage(addItem: _addNewUserToList))),
             child: const Text(
               "Register",
               style: TextStyle(color: Colors.white),
             ),
           ),
-        
+
           TextButton(
-            onPressed: () =>  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          CalendarPage(list: _user!.listItems))),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CalendarPage(list: _user!.listItems))),
             child: const Text(
               "Calendar",
               style: TextStyle(color: Colors.white),
             ),
-          ),IconButton(
+          ),
+          IconButton(
             icon: Icon(Icons.add),
             onPressed: () => _addItemFunction(context),
           ),
         ]),
-          
+
         body: Center(
           child: _user!.listItems.isEmpty
               ? Text('No elements')
@@ -175,22 +173,34 @@ class _MyHomePageState extends State<MyHomePage> {
                         margin: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 10),
                         child: ListTile(
-                          title: Text(
-                            _user!.listItems[index].subject,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            _user!.listItems[index].date.toString(),
-                            style:
-                                TextStyle(color: Colors.grey.withOpacity(1.0)),
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {
-                              _deleteItem(_user!.listItems[index].id);
-                            },
-                          ),
-                        ));
+                            title: Text(
+                              _user!.listItems[index].subject,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text( 
+                              "${_user!.listItems[index].date}\nlatitude: ${_user!.listItems[index].latitude}\nlongitude: ${_user!.listItems[index].longitude}",
+                              style: TextStyle(
+                                  color: Colors.grey.withOpacity(1.0)),
+                            ),
+                            trailing: Column(
+                              children: [
+                              
+                                IconButton(
+                                  icon: const Icon(Icons.location_on),
+                                  onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MapScreen(latitude: _user!.listItems[index].latitude,longitude: _user!.listItems[index].longitude))),
+                                ),
+                                SizedBox(height: 5,),
+                                //   IconButton(
+                                //   icon: Icon(Icons.delete),
+                                //   onPressed: () {
+                                //     _deleteItem(_user!.listItems[index].id);
+                                //   },
+                                // ),
+                              ],
+                            )));
                   },
                   itemCount: _user!.listItems.length),
         ));
@@ -198,6 +208,10 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key, required this.latitude, required this.longitude});
+  final double latitude;
+  final double longitude;
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -215,18 +229,17 @@ class _MapScreenState extends State<MapScreen> {
 
   void initState() {
     _origin = Marker(
-          markerId: const MarkerId('origin'),
-          infoWindow: const InfoWindow(title: 'Origin'),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          position: LatLng(37.773972, -122.431297),
-        );
-    _destination =  Marker(
-          markerId: const MarkerId('destination'),
-          infoWindow: const InfoWindow(title: 'Destination'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          position: LatLng(37.779400, -122.439500),
-        );
+      markerId: const MarkerId('origin'),
+      infoWindow: const InfoWindow(title: 'Origin'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      position: LatLng(37.773972, -122.431297),
+    );
+    _destination = Marker(
+      markerId: const MarkerId('destination'),
+      infoWindow: const InfoWindow(title: 'Destination'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      position: LatLng(37.779400, -122.439500),
+    );
   }
 
   @override
@@ -338,21 +351,21 @@ class _MapScreenState extends State<MapScreen> {
         foregroundColor: Colors.black,
         onPressed: () {
           _googleMapController.animateCamera(
-          _info != null
-              ? CameraUpdate.newLatLngBounds(_info!.bounds, 100.0)
-              : CameraUpdate.newCameraPosition(_initialCameraPosition),
-        );
-        _directions();
-        } ,
+            _info != null
+                ? CameraUpdate.newLatLngBounds(_info!.bounds, 100.0)
+                : CameraUpdate.newCameraPosition(_initialCameraPosition),
+          );
+          _directions();
+        },
         child: const Icon(Icons.center_focus_strong),
       ),
     );
   }
 
   void _directions() async {
-     final directions = await DirectionsRepository()
-          .getDirections(origin: _origin.position, destination: _destination.position);
-      setState(() => _info = directions);
+    final directions = await DirectionsRepository().getDirections(
+        origin: _origin.position, destination: _destination.position);
+    setState(() => _info = directions);
   }
 
   void _addMarker(LatLng pos) async {
